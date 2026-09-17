@@ -7,6 +7,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Platform: Linux](https://img.shields.io/badge/platform-Linux%20%7C%20Ubuntu-orange.svg)](https://ubuntu.com/)
+[![Built with: Gemini 3.8 Flash](https://img.shields.io/badge/Built%20with-Gemini%203.8%20Flash-8E24AA.svg?logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen.svg)](https://ibarraespinosa.github.io/referee/)
 [![CI](https://github.com/ibarraespinosa/referee/actions/workflows/ci.yml/badge.svg)](https://github.com/ibarraespinosa/referee/actions/workflows/ci.yml)
 [![Standard: ISO 32000](https://img.shields.io/badge/PDF-ISO%2032000%20Standard-brightgreen.svg)](https://www.iso.org/standard/75839.html)
 
@@ -177,6 +179,7 @@ QT_QPA_PLATFORM=offscreen python3 -m unittest discover tests
 ## 👤 Author & Acknowledgments
 
 - **Sergio Ibarra-Espinosa** ([@ibarraespinosa](https://github.com/ibarraespinosa) · [sibarra@umd.edu](mailto:sibarra@umd.edu))
+- Written and developed with **Gemini 3.8 Flash** (Google DeepMind).
 - Built with [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) and [PyMuPDF](https://pymupdf.readthedocs.io/).
 
 ---

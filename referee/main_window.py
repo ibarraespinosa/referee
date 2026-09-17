@@ -537,20 +537,22 @@ class MainWindow(QMainWindow):
 
     def _show_about(self):
         msg = """
-<h3>ReviewerPDF 1.0.0</h3>
-<p>An open-source, Acrobat-like PDF review and annotation editor tailored for reviewers on Ubuntu.</p>
+<h3>Referee 1.0.0</h3>
+<p>An open-source, Acrobat-like PDF review and annotation editor tailored for reviewers on Ubuntu / Linux.</p>
 <p><b>Features:</b>
 <ul>
   <li>1-Click multi-color text highlights (Yellow, Green, Blue, Pink, Orange)</li>
   <li>Sticky notes, Underline, Strikeout, Freehand Pen, and Margin Text boxes</li>
-  <li>Review Comments Panel with direct jump and inline editing</li>
+  <li>Live Review Comments drawer with direct jump, filter, and inline editing</li>
   <li>1-Click Export to Markdown & Plain Text for OpenReview / HotCRP / EasyChair</li>
   <li>ISO 32000 standard annotations compatible with Adobe Acrobat & Evince</li>
 </ul>
 </p>
-<p>Built with Python 3, PyQt5, and PyMuPDF.</p>
+<p><b>Credits & Technology:</b><br>
+Built with Python 3, PyQt5, and PyMuPDF.<br>
+Developed with <b>Gemini 3.8 Flash</b> by Google DeepMind.</p>
         """
-        QMessageBox.about(self, "About ReviewerPDF", msg)
+        QMessageBox.about(self, "About Referee", msg)
 
     def _set_status(self, msg: str):
         self.lbl_status_msg.setText(msg)

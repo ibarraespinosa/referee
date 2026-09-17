@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referee — Acrobat-Like PDF Review & Annotation Editor for Ubuntu</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+      --bg-card-hover: #262626;
+      --text-main: #f0f0f0;
+      --text-muted: #a0a0a0;
+      --accent: #E95420;
+      --accent-hover: #ff6a38;
+      --accent-light: rgba(233, 84, 32, 0.15);
+      --border: #333333;
+      --code-bg: #181818;
+      --hl-yellow: #FFEB3B;
+      --hl-green: #A8E6CF;
+      --hl-blue: #B3E5FC;
+      --hl-pink: #FF8B94;
+      --hl-orange: #FFD3B6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Top Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(18, 18, 18, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .nav-brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+    }
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #fff !important;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-main) !important;
+    }
+    .btn-outline:hover {
+      background: var(--bg-card);
+      border-color: #555;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(142, 36, 170, 0.15);
+      border: 1px solid rgba(142, 36, 170, 0.4);
+      border-radius: 20px;
+      font-size: 13px;
+      color: #ce93d8;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #E95420 0%, #ff8a65 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 760px;
+      margin: 0 auto 32px;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .badges-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .badges-row img {
+      height: 22px;
+    }
+
+    /* UI Preview Showcase */
+    .ui-showcase {
+      margin: 40px 0 80px;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .window-header {
+      background: #242424;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+      margin-right: 16px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .window-title {
+      font-size: 12px;
+      color: #999;
+      font-weight: 500;
+      flex: 1;
+      text-align: center;
+    }
+
+    .app-mockup {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 440px;
+      background: #181818;
+    }
+
+    .mockup-sidebar {
+      background: #202020;
+      border-right: 1px solid var(--border);
+      padding: 16px;
+      font-size: 13px;
+    }
+
+    .mockup-sidebar h4 {
+      color: var(--accent);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .mockup-comment {
+      background: #282828;
+      border-left: 3px solid var(--accent);
+      padding: 8px 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .mockup-comment .tag {
+      font-weight: bold;
+      color: #ffb74d;
+      margin-bottom: 2px;
+    }
+
+    .mockup-canvas {
+      padding: 30px;
+      background: #141414;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mockup-page {
+      background: #ffffff;
+      color: #111;
+      width: 100%;
+      max-width: 520px;
+      padding: 30px 40px;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .mockup-page h3 {
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: #000;
+    }
+
+    .hl-demo-yellow { background: rgba(255, 235, 59, 0.5); padding: 2px 4px; border-radius: 2px; }
+    .hl-demo-pink { background: rgba(255, 139, 148, 0.5); padding: 2px 4px; border-radius: 2px; }
+    .hl-demo-green { background: rgba(168, 230, 207, 0.6); padding: 2px 4px; border-radius: 2px; }
+
+    /* Features Grid */
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+      font-size: 36px;
+      font-family: 'Ubuntu', sans-serif;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      transition: all 0.2s ease;
+    }
+    .feature-card:hover {
+      border-color: #555;
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Colors Section */
+    .colors-showcase {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+      margin-bottom: 80px;
+    }
+
+    .color-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .swatch-card {
+      background: #252525;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .swatch-color {
+      height: 14px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .swatch-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .swatch-purpose {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Export Comparison */
+    .export-section {
+      margin-bottom: 80px;
+    }
+
+    .export-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .export-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .export-card h3 {
+      font-size: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: #e6e6e6;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Shortcuts Table */
+    .shortcuts-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .shortcuts-table th, .shortcuts-table td {
+      padding: 12px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shortcuts-table th {
+      background: #262626;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .shortcuts-table td {
+      font-size: 14px;
+    }
+
+    .kbd {
+      background: #333333;
+      border: 1px solid #4a4a4a;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 50px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    .gemini-credit {
+      color: #ce93d8;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .app-mockup { grid-template-columns: 1fr; }
+      .mockup-sidebar { display: none; }
+      .export-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="assets/logo.png" alt="Referee Logo">
+      <span>Referee</span>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#colors">Review Palette</a>
+      <a href="#install">Installation</a>
+      <a href="#shortcuts">Shortcuts</a>
+      <a href="https://github.com/ibarraespinosa/referee" class="btn btn-outline" target="_blank">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+      <a href="#install" class="btn btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-badge">
+        ✨ Written with <b>Gemini 3.8 Flash</b> (Google DeepMind)
+      </div>
+      <h1>The Academic PDF Review &<br><span>Annotation Editor</span> for Linux</h1>
+      <p>
+        A fast, lightweight, and open-source Acrobat alternative built specifically for peer reviewers, editors, and researchers on Ubuntu.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#install" class="btn btn-primary" style="padding: 12px 24px; font-size: 16px;">
+          ⚡ 1-Click Install
+        </a>
+        <a href="https://github.com/ibarraespinosa/referee" class="btn btn-outline" style="padding: 12px 24px; font-size: 16px;" target="_blank">
+          View Repository on GitHub
+        </a>
+      </div>
+
+      <div class="badges-row">
+        <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
+        <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python 3.8+">
+        <img src="https://img.shields.io/badge/Platform-Ubuntu%20%7C%20Linux-orange.svg" alt="Linux">
+        <img src="https://img.shields.io/badge/PDF-ISO%2032000%20Compliant-brightgreen.svg" alt="ISO 32000">
+        <img src="https://img.shields.io/badge/Built%20with-Gemini%203.8%20Flash-8E24AA.svg?logo=google&logoColor=white" alt="Gemini 3.8 Flash">
+      </div>
+    </section>
+
+    <!-- App Mockup -->
+    <div class="ui-showcase">
+      <div class="window-header">
+        <div class="window-dots">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="window-title">referee — manuscript_review.pdf</div>
+      </div>
+      <div class="app-mockup">
+        <!-- Sidebar -->
+        <div class="mockup-sidebar">
+          <h4>Review Comments (3)</h4>
+          <div class="mockup-comment">
+            <div class="tag">[Highlight · p.1]</div>
+            <div>"sub-quadratic attention..."</div>
+            <div style="color: #bbb; margin-top: 4px;"><em>Reviewer 1: Cite Vaswani 2017 baseline here.</em></div>
+          </div>
+          <div class="mockup-comment" style="border-left-color: var(--hl-pink);">
+            <div class="tag" style="color: #ff8b94;">[Sticky Note · p.1]</div>
+            <div>"Check math consistency in Eq (1)."</div>
+          </div>
+          <div class="mockup-comment" style="border-left-color: var(--hl-green);">
+            <div class="tag" style="color: #a8e6cf;">[Highlight · p.2]</div>
+            <div>"Surpasses prior state-of-the-art"</div>
+            <div style="color: #bbb; margin-top: 4px;"><em>Reviewer 1: Convincing ablation results.</em></div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="mockup-canvas">
+          <div class="mockup-page">
+            <h3>Scalable Transformer Architectures for Genomic Sequence Analysis</h3>
+            <p style="color: #666; font-size: 10px; margin-bottom: 12px;">Jane Doe, John Smith — Dept of Computer Science & Bioinformatics</p>
+            <p>
+              Biological sequence modeling has seen rapid advancements through large self-supervised models.
+              However, existing architectures struggle with quadratic complexity. In this paper, we propose HelixFormer, a
+              <span class="hl-demo-yellow">sub-quadratic attention mechanism optimized for chromatin structure</span>.
+            </p>
+            <p style="margin-top: 10px;">
+              Over 98% of human genomic variants fall into non-coding regions. <span class="hl-demo-pink">standard dense transformers fail on sequences beyond 32kb</span>.
+              <span class="hl-demo-green">HelixFormer achieves an AUROC of 0.892 on pathogenic non-coding SNVs</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features">
+      <div class="section-title">
+        <h2>Built Specifically for Reviewers</h2>
+        <p>No bloat, no subscription fees. Just the reviewer tools you need every day.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🖍️</div>
+          <h3>1-Click Text Highlighting</h3>
+          <p>Drag across text to instantly apply standard reviewer color highlights. Seamless selection and grouping across lines.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📌</div>
+          <h3>Sticky Notes & Callouts</h3>
+          <p>Drop comment pins anywhere on equations, paragraphs, or diagrams. Keep notes organized with customizable reviewer tags.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Live Review Drawer</h3>
+          <p>All comments and highlights appear in an interactive sidebar grouped by page. Click any item to jump directly to it.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>1-Click Review Export</h3>
+          <p>Export all your notes, quotes, and critique into clean Markdown or Plain Text ready for OpenReview, HotCRP, or EasyChair.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">✍️</div>
+          <h3>Pen, Underline & Shapes</h3>
+          <p>Circle equations with the freehand pen, underline statements, strike out words, or draw bounding boxes around figures.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⚖️</div>
+          <h3>100% ISO 32000 Compliant</h3>
+          <p>All annotations are native PDF annotations. Authors and editors opening your files in Acrobat, Okular, or Chrome see them natively.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review Colors -->
+    <section id="colors" class="colors-showcase">
+      <h2 style="font-size: 24px; margin-bottom: 8px;">🎨 Reviewer Color System</h2>
+      <p style="color: var(--text-muted); font-size: 14px;">Referee comes configured with color coding optimized for academic manuscript reviews:</p>
+
+      <div class="color-swatches">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--hl-yellow);"></div>
+          <div class="swatch-name">Yellow</div>
+          <div class="swatch-purpose">Key finding / Core point</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--hl-green);"></div>
+          <div class="swatch-name">Green</div>
+          <div class="swatch-purpose">Strength / Excellent argument</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--hl-blue);"></div>
+          <div class="swatch-name">Blue</div>
+          <div class="swatch-purpose">Question / Citation needed</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--hl-pink);"></div>
+          <div class="swatch-name">Pink</div>
+          <div class="swatch-purpose">Critique / Flaw / Weakness</div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background: var(--hl-orange);"></div>
+          <div class="swatch-name">Orange</div>
+          <div class="swatch-purpose">Clarification / Formatting</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Export Demonstration -->
+    <section class="export-section">
+      <div class="section-title">
+        <h2>From PDF Markup to Review Submission</h2>
+        <p>No more re-typing quotes into conference review textboxes. Referee generates your report automatically.</p>
+      </div>
+
+      <div class="export-grid">
+        <div class="export-card">
+          <h3>📄 Marked-up Manuscript</h3>
+          <pre><code>[Page 1]
+- Highlight: "sub-quadratic attention..."
+  Note: "Cite baseline transformer here."
+
+[Page 2]
+- Sticky Note on Equation 1:
+  "Verify derivation of alpha weights."
+
+[Page 3]
+- Strikeout: "completely unprecedented"</code></pre>
+        </div>
+
+        <div class="export-card">
+          <h3>📝 Exported Markdown Review (`.md`)</h3>
+          <pre><code># Review Notes: manuscript.pdf
+**Reviewer:** Reviewer 1
+
+## Page 1
+- `[Highlight]` *"sub-quadratic attention..."*
+  > **Reviewer Comment:** Cite baseline transformer here.
+
+## Page 2
+- `[Sticky Note]` **Comment:** Verify derivation of alpha weights.
+
+## Page 3
+- `[Strikeout]` *"completely unprecedented"*</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation -->
+    <section id="install" style="margin-bottom: 8px;">
+      <div class="section-title">
+        <h2>Installation & Setup</h2>
+        <p>Get started in under 30 seconds on Ubuntu and Linux distributions.</p>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-bottom: 30px;">
+        <h3 style="margin-bottom: 12px; color: #fff;">Option 1: Automated 1-Click Installer (Recommended)</h3>
+        <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">Clones the repo, installs the CLI command, and sets up your desktop application menu entry:</p>
+        <pre><code>git clone https://github.com/ibarraespinosa/referee.git
+cd referee
+./install.sh</code></pre>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 28px;">
+        <h3 style="margin-bottom: 12px; color: #fff;">Option 2: Install via Pip</h3>
+        <pre><code>pip install --user . --break-system-packages</code></pre>
+      </div>
+    </section>
+
+    <!-- Shortcuts -->
+    <section id="shortcuts" style="margin-top: 60px; margin-bottom: 80px;">
+      <div class="section-title">
+        <h2>Keyboard Shortcuts Cheat Sheet</h2>
+        <p>Review at lightning speed using full keyboard shortcuts.</p>
+      </div>
+
+      <table class="shortcuts-table">
+        <thead>
+          <tr>
+            <th>Shortcut</th>
+            <th>Tool / Action</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="kbd">Shift + H</span></td>
+            <td><strong>Highlight</strong></td>
+            <td>Activate highlight tool and drag across text</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">N</span></td>
+            <td><strong>Sticky Note</strong></td>
+            <td>Click anywhere to place a review comment pin</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">U</span> / <span class="kbd">S</span></td>
+            <td><strong>Underline / Strikeout</strong></td>
+            <td>Suggest text additions or deletions</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">T</span></td>
+            <td><strong>Margin Text Box</strong></td>
+            <td>Type text directly on the page margin</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">P</span> / <span class="kbd">R</span></td>
+            <td><strong>Pen / Rectangle</strong></td>
+            <td>Circle formulas or frame figures and tables</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">V</span></td>
+            <td><strong>Select / Pointer</strong></td>
+            <td>Select annotations or inspect review notes</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">Del</span></td>
+            <td><strong>Delete Mark</strong></td>
+            <td>Remove the currently selected annotation</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">Ctrl + F</span></td>
+            <td><strong>Find Text</strong></td>
+            <td>Search across document with match counter</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">Ctrl + S</span></td>
+            <td><strong>Save PDF</strong></td>
+            <td>Save with standard ISO 32000 PDF annotations</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">Ctrl + Z</span></td>
+            <td><strong>Undo</strong></td>
+            <td>Undo last review annotation</td>
+          </tr>
+          <tr>
+            <td><span class="kbd">F9</span></td>
+            <td><strong>Toggle Sidebar</strong></td>
+            <td>Show/hide thumbnails and review notes drawer</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p><strong>Referee</strong> — Open-source PDF Review & Annotation Editor for Linux.</p>
+      <p>Created by <strong>Sergio Ibarra-Espinosa</strong> (<a href="mailto:sibarra@umd.edu">sibarra@umd.edu</a> · <a href="https://github.com/ibarraespinosa" target="_blank">@ibarraespinosa</a>).</p>
+      <p class="gemini-credit">Written and developed with <strong>Gemini 3.8 Flash</strong> by Google DeepMind.</p>
+      <p style="margin-top: 16px; font-size: 13px;">Released under the <a href="https://github.com/ibarraespinosa/referee/blob/main/LICENSE">MIT License</a>.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
