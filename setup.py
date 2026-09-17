@@ -7,7 +7,7 @@ setup(
     name="referee-pdf",
     version="1.0.0",
     author="Sergio Ibarra-Espinosa",
-    author_email="zergioibarra@gmail.com",
+    author_email="sibarra@umd.edu",
     description="Acrobat-like PDF Annotation & Review Editor for Ubuntu/Linux",
     long_description=long_description,
     long_description_content_type="text/markdown",

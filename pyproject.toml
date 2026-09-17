@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Acrobat-like PDF Annotation & Review Editor for Ubuntu/Linux"
 readme = "README.md"
 authors = [
-  { name="Sergio Ibarra-Espinosa", email="zergioibarra@gmail.com" }
+  { name="Sergio Ibarra-Espinosa", email="sibarra@umd.edu" }
 ]
 license = { text = "MIT" }
 classifiers = [

@@ -176,7 +176,7 @@ QT_QPA_PLATFORM=offscreen python3 -m unittest discover tests
 
 ## 👤 Author & Acknowledgments
 
-- **Sergio Ibarra-Espinosa** ([@ibarraespinosa](https://github.com/ibarraespinosa))
+- **Sergio Ibarra-Espinosa** ([@ibarraespinosa](https://github.com/ibarraespinosa) · [sibarra@umd.edu](mailto:sibarra@umd.edu))
 - Built with [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) and [PyMuPDF](https://pymupdf.readthedocs.io/).
 
 ---
